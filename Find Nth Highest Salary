@@ -1,0 +1,40 @@
+Option--1
+SELECT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET N-1;
+
+------------------------------------
+Option--2
+SELECT salary
+FROM (
+    SELECT salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+    FROM employees
+) AS ranked
+WHERE row_num = N;
+
+-----------------------------------
+Option--3
+SELECT salary
+FROM (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM employees
+) AS ranked
+WHERE rank = N;
+
+-----------------------------------
+Option--4
+SELECT MAX(salary) AS nth_highest_salary
+FROM employees
+WHERE salary < (
+    SELECT MAX(salary) FROM employees
+    WHERE salary < (
+        SELECT MAX(salary) FROM employees
+        ...
+        -- Repeat (N-1) times
+    )
+);
+
+
+----------------------------------------
+
