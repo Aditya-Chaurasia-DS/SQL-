@@ -1,0 +1,14 @@
+WITH DuplicateRows AS (
+    SELECT 
+        user_id,
+        email,
+        ROW_NUMBER() OVER(PARTITION BY user_id, email ORDER BY id) AS row_num
+    FROM 
+        Users
+)
+DELETE FROM Users
+WHERE id IN (
+    SELECT id
+    FROM DuplicateRows
+    WHERE row_num > 1
+);
