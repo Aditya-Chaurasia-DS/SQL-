@@ -1,0 +1,7 @@
+SELECT d.DepartmentName, AVG(e.Salary) AS AverageSalary
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID
+WHERE e.HireDate < DATEADD(year, -2, GETDATE())
+GROUP BY d.DepartmentName
+ORDER BY AverageSalary DESC
+LIMIT 1;
